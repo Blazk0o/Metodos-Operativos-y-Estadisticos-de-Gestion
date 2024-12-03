@@ -1,0 +1,39 @@
+Sets
+   i Clientes / Cliente1*Cliente4 /
+   j Almacenes / Almacen1*Almacen3 /;
+
+Parameters
+   d(i,j) Distancia entre clientes y almacenes
+         / Cliente1.Almacen1 450, Cliente1.Almacen2 320, Cliente1.Almacen3 400,
+           Cliente2.Almacen1 320, Cliente2.Almacen2 150, Cliente2.Almacen3 500,
+           Cliente3.Almacen1 200, Cliente3.Almacen2 600, Cliente3.Almacen3 100,
+           Cliente4.Almacen1 550, Cliente4.Almacen2 300, Cliente4.Almacen3 370 /
+   c(i) Demanda de clientes
+       / Cliente1 400, Cliente2 600, Cliente3 600, Cliente4 900 /
+   s(j) Capacidad de almacenes
+       / Almacen1 500, Almacen2 700, Almacen3 1500 /;
+
+Positive Variables
+   x(i,j) Cantidad de tableros enviados desde almacén j a cliente i;
+
+Variables
+   z Total costo de transporte;
+
+Equations
+   obj Función objetivo
+   demand(i) Satisfacer demanda de clientes
+   supply(j) No exceder capacidad de almacenes
+   res8 Restricción adicional;
+
+obj.. z =e= sum((i,j), d(i,j)*x(i,j));
+
+demand(i).. sum(j, x(i,j)) =e= c(i);
+
+supply(j).. sum(i, x(i,j)) =l= s(j);
+
+res8.. sum(i, x(i,2)) =l= 600;
+
+Model lineal /all/;
+Solve lineal using LP minimizing z;
+
+Display x.l, z.l;
